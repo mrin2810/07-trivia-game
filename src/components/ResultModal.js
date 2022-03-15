@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React from 'react';
 
-export default function ResultModal({ isCorrect }) {
+export default function ResultModal({ isCorrect, question, getQuestion }) {
   return (
-    <div className="result-modal">
+    <div className={`result-modal ${isCorrect ? 'is-correct' : 'is-wrong'}`}>
       <div className="overlay" />
       <div className="result-modal-content">
         {isCorrect && <h3>
@@ -21,10 +21,10 @@ export default function ResultModal({ isCorrect }) {
         {!isCorrect && <div className="correct-answer">
           <small>The correct answer was:</small>
           <br />
-          <strong>Answer here</strong>
+          <strong dangerouslySetInnerHTML={{ __html: question.correct_answer}}/>
         </div>}
 
-        <button>Go to next question 👉</button>
+        <button onClick={getQuestion}>Go to next question 👉</button>
       </div>
     </div>
   );

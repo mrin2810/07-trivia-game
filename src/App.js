@@ -22,6 +22,8 @@ export default function App() {
     .then(data => {
       setQuestion(data.results[0]);
     });
+
+    setIsCorrect(null);
   }, [selectedCategory])
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export default function App() {
   return (
     <div className="app">
       {/* show the result modal ----------------------- */}
-      {isCorrect !== null && <ResultModal isCorrect={isCorrect} />}
+      {isCorrect !== null && <ResultModal isCorrect={isCorrect} question={question} getQuestion={getQuestion}/>}
 
       {/* question header ----------------------- */}
       <div className="question-header">
