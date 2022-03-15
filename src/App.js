@@ -12,8 +12,6 @@ export default function App() {
   const [question, setQuestion] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('any');
   const [isCorrect, setIsCorrect] = useState(null);
-  const [correctScore, setCorrectScore] = useState(0);
-  const [wrongScore, setWrongScore] = useState(0);
 
   const override = {
     display: 'block',
@@ -41,9 +39,6 @@ export default function App() {
   function handleQuestionAnswered(answer) {
     const isAnswerCorrect = answer === question.correct_answer;
     setIsCorrect(isAnswerCorrect);
-
-    if(isAnswerCorrect) setCorrectScore(correctScore => correctScore + 1);
-    else setWrongScore(wrongScore => wrongScore + 1);
   }
 
   return (
@@ -58,8 +53,7 @@ export default function App() {
           chooseCategory={setSelectedCategory}
         />
         <Scoreboard 
-          correct={correctScore}
-          wrong={wrongScore}
+          isCorrect={isCorrect}
         />
       </div>
 
