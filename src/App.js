@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React, { useCallback, useEffect, useState } from 'react';
+import ClipLoader from "react-spinners/ClipLoader";
 import Question from './components/Question';
 import CategorySelector from './components/CategorySelector';
 import ResultModal from './components/ResultModal';
@@ -11,27 +12,38 @@ export default function App() {
   const [question, setQuestion] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('any');
   const [isCorrect, setIsCorrect] = useState(null);
+  const [correctScore, setCorrectScore] = useState(0);
+  const [wrongScore, setWrongScore] = useState(0);
 
+  const override = {
+    display: 'block',
+    margin: '0 auto',
+    borderColor: '#409182',
+    border: '4px solid'
+  }
 
   const getQuestion = useCallback(() => {
     let url = 'https://opentdb.com/api.php?amount=1';
     if(selectedCategory !== 'any') url += `&category=${selectedCategory}`;
-
+    setIsCorrect(null);
+    setQuestion(null);
     fetch(url)
     .then(res => res.json())
     .then(data => {
       setQuestion(data.results[0]);
     });
-
-    setIsCorrect(null);
-  }, [selectedCategory])
+  }, [selectedCategory]);
 
   useEffect(() => {
     getQuestion();
   }, [getQuestion]);
 
   function handleQuestionAnswered(answer) {
-    setIsCorrect(answer === question.correct_answer);
+    const isAnswerCorrect = answer === question.correct_answer;
+    setIsCorrect(isAnswerCorrect);
+
+    if(isAnswerCorrect) setCorrectScore(correctScore => correctScore + 1);
+    else setWrongScore(wrongScore => wrongScore + 1);
   }
 
   return (
@@ -45,7 +57,10 @@ export default function App() {
           category={selectedCategory} 
           chooseCategory={setSelectedCategory}
         />
-        <Scoreboard />
+        <Scoreboard 
+          correct={correctScore}
+          wrong={wrongScore}
+        />
       </div>
 
       {/* the question itself ----------------------- */}
@@ -54,6 +69,7 @@ export default function App() {
           question={question}
           answerQuestion={handleQuestionAnswered}
         />}
+        {question === null && <ClipLoader loading={true} css={override} size={150} />}
       </div>
 
       {/* question footer ----------------------- */}
