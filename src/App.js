@@ -1,16 +1,16 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ClipLoader from "react-spinners/ClipLoader";
 import Question from './components/Question';
 import CategorySelector from './components/CategorySelector';
 import ResultModal from './components/ResultModal';
 import Scoreboard from './components/Scoreboard';
 import './App.css';
+import useTrivia from './useTrivia';
 
 export default function App() {
 
-  const [question, setQuestion] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState('any');
+  const { question, getQuestion, category, setCategory} = useTrivia();
   const [isCorrect, setIsCorrect] = useState(null);
 
   const override = {
@@ -20,21 +20,10 @@ export default function App() {
     border: '4px solid'
   }
 
-  const getQuestion = useCallback(() => {
-    let url = 'https://opentdb.com/api.php?amount=1';
-    if(selectedCategory !== 'any') url += `&category=${selectedCategory}`;
+  function handleNextQuestion() {
     setIsCorrect(null);
-    setQuestion(null);
-    fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      setQuestion(data.results[0]);
-    });
-  }, [selectedCategory]);
-
-  useEffect(() => {
     getQuestion();
-  }, [getQuestion]);
+  }
 
   function handleQuestionAnswered(answer) {
     const isAnswerCorrect = answer === question.correct_answer;
@@ -44,13 +33,13 @@ export default function App() {
   return (
     <div className="app">
       {/* show the result modal ----------------------- */}
-      {isCorrect !== null && <ResultModal isCorrect={isCorrect} question={question} getQuestion={getQuestion}/>}
+      {isCorrect !== null && <ResultModal isCorrect={isCorrect} question={question} getQuestion={handleNextQuestion}/>}
 
       {/* question header ----------------------- */}
       <div className="question-header">
         <CategorySelector 
-          category={selectedCategory} 
-          chooseCategory={setSelectedCategory}
+          category={category} 
+          chooseCategory={setCategory}
         />
         <Scoreboard 
           isCorrect={isCorrect}
@@ -63,12 +52,12 @@ export default function App() {
           question={question}
           answerQuestion={handleQuestionAnswered}
         />}
-        {question === null && <ClipLoader loading={true} css={override} size={150} />}
+        {question === null && <ClipLoader loading={true} css={override} size={50} />}
       </div>
 
       {/* question footer ----------------------- */}
       <div className="question-footer">
-        <button onClick={getQuestion}>Go to next question 👉</button>
+        <button onClick={handleNextQuestion}>Go to next question 👉</button>
       </div>
     </div>
   );
