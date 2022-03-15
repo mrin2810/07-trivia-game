@@ -9,6 +9,7 @@ import './App.css';
 export default function App() {
 
   const [question, setQuestion] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('any');
 
   useEffect(() => {
     getQuestion();
@@ -29,7 +30,10 @@ export default function App() {
 
       {/* question header ----------------------- */}
       <div className="question-header">
-        <CategorySelector />
+        <CategorySelector 
+          category={selectedCategory} 
+          chooseCategory={setSelectedCategory}
+        />
         <Scoreboard />
       </div>
 
