@@ -1,27 +1,28 @@
+/* eslint-disable jsx-a11y/accessible-emoji */
 import React from 'react';
 
-export default function ResultModal() {
+export default function ResultModal({ isCorrect }) {
   return (
     <div className="result-modal">
       <div className="overlay" />
       <div className="result-modal-content">
-        <h3>
+        {isCorrect && <h3>
           👊👊👊
           <br />
           YOU WON!
-        </h3>
+        </h3>}
 
-        <h3>
+        {!isCorrect && <h3>
           😟😢😟
           <br />
           YOU LOST!
-        </h3>
+        </h3>}
 
-        <div className="correct-answer">
+        {!isCorrect && <div className="correct-answer">
           <small>The correct answer was:</small>
           <br />
           <strong>Answer here</strong>
-        </div>
+        </div>}
 
         <button>Go to next question 👉</button>
       </div>

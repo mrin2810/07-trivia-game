@@ -10,6 +10,8 @@ export default function App() {
 
   const [question, setQuestion] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('any');
+  const [isCorrect, setIsCorrect] = useState(null);
+
 
   const getQuestion = useCallback(() => {
     let url = 'https://opentdb.com/api.php?amount=1';
@@ -24,12 +26,16 @@ export default function App() {
 
   useEffect(() => {
     getQuestion();
-  }, [getQuestion])
+  }, [getQuestion]);
+
+  function handleQuestionAnswered(answer) {
+    setIsCorrect(answer === question.correct_answer);
+  }
 
   return (
     <div className="app">
       {/* show the result modal ----------------------- */}
-      {/* <ResultModal /> */}
+      {isCorrect !== null && <ResultModal isCorrect={isCorrect} />}
 
       {/* question header ----------------------- */}
       <div className="question-header">
@@ -42,12 +48,15 @@ export default function App() {
 
       {/* the question itself ----------------------- */}
       <div className="question-main">
-        {question && <Question question={question}/>}
+        {question && <Question 
+          question={question}
+          answerQuestion={handleQuestionAnswered}
+        />}
       </div>
 
       {/* question footer ----------------------- */}
       <div className="question-footer">
-        <button>Go to next question 👉</button>
+        <button onClick={getQuestion}>Go to next question 👉</button>
       </div>
     </div>
   );
